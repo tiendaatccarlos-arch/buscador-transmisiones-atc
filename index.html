@@ -18,6 +18,16 @@
     // asumimos que sí está embebido (es la causa más común de ese error).
     document.documentElement.classList.add('atc-embedded');
   }
+  // Si nos embebieron en el home (?embed=home), ahí NO hay un título externo
+  // de la tienda ya visible, así que dejamos nuestro propio título/subtítulo.
+  // En otras páginas (ej. Identificador de Transmisión) sí lo escondemos,
+  // porque la página de Tiendanube ya trae su propio título.
+  try {
+    var params = new URLSearchParams(window.location.search);
+    if (params.get('embed') === 'home') {
+      document.documentElement.classList.add('atc-embed-home');
+    }
+  } catch (e) {}
 })();
 </script>
 <style>
@@ -61,16 +71,15 @@ html.atc-embedded .atc-topbar{
 html.atc-embedded .atc-body{
   padding-top:8px;
 }
-html.atc-embedded .atc-tool h1,
-html.atc-embedded .atc-tool .sub{
+html.atc-embedded:not(.atc-embed-home) .atc-tool h1,
+html.atc-embedded:not(.atc-embed-home) .atc-tool .sub{
   display:none;
 }
 html.atc-embedded .atc-tool{
   background:#fff;
   border:1px solid var(--line);
   border-radius:14px;
-  margin:20px auto 24px;
-  max-width:920px;
+  margin:20px 0 24px;
   box-shadow:0 4px 20px rgba(8,27,51,.07);
 }
 .atc-topbar a{
