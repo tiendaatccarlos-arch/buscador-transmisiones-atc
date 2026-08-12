@@ -4,6 +4,22 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>Buscador de Transmisión — ATC Carlos</title>
+<script>
+// Si el buscador está embebido dentro de un iframe (ej. dentro de transatc.com),
+// marcamos el <html> para esconder la barra "Volver a ATC Carlos" vía CSS,
+// ya que la tienda que lo embebe ya trae su propio header.
+(function(){
+  try {
+    if (window.self !== window.top) {
+      document.documentElement.classList.add('atc-embedded');
+    }
+  } catch (e) {
+    // Si el navegador bloquea la comparación por seguridad cross-origin,
+    // asumimos que sí está embebido (es la causa más común de ese error).
+    document.documentElement.classList.add('atc-embedded');
+  }
+})();
+</script>
 <style>
 @import url('https://fonts.googleapis.com/css2?family=Barlow+Condensed:wght@600;700;800&family=JetBrains+Mono:wght@500;700&family=Inter:wght@400;500;600;700&display=swap');
 
@@ -37,6 +53,14 @@
   justify-content:center;
   gap:8px;
 }
+/* Cuando el buscador está embebido dentro de un iframe (ej. dentro de la tienda),
+   la tienda ya trae su propio header, así que esta barra sobra y se esconde sola. */
+html.atc-embedded .atc-topbar{
+  display:none;
+}
+html.atc-embedded .atc-body{
+  padding-top:32px;
+}
 .atc-topbar a{
   display:flex;
   align-items:center;
@@ -55,10 +79,10 @@
 }
 .atc-topbar a:hover .arrow{transform:translateX(-3px);}
 .atc-topbar .brand{
-  font-family:'Barlow Condensed',sans-serif;
-  font-weight:800;
-  letter-spacing:.04em;
-  color:var(--red-soft);
+  font-family:'Inter',sans-serif;
+  font-weight:700;
+  letter-spacing:.03em;
+  color:#fff;
   text-transform:uppercase;
 }
 .atc-logo{
@@ -83,13 +107,13 @@
   margin-bottom:8px;
 }
 .atc-tool h1{
-  font-family:'Barlow Condensed',sans-serif;
+  font-family:'Inter',-apple-system,sans-serif;
   font-weight:800;
-  font-size:clamp(28px,5vw,40px);
-  line-height:1.02;
+  font-size:clamp(24px,4.2vw,34px);
+  line-height:1.1;
   letter-spacing:-.01em;
   color:var(--navy);
-  margin:0 0 8px;
+  margin:0 0 10px;
   text-transform:uppercase;
 }
 .atc-tool .sub{
@@ -477,6 +501,73 @@
   border-left:2.5px solid var(--line);
   padding-left:12px;
 }
+
+/* ---- WhatsApp floating button ---- */
+.wa-float{
+  position:fixed;
+  right:18px;
+  bottom:18px;
+  z-index:40;
+  display:flex;
+  align-items:center;
+  gap:8px;
+  background:#25D366;
+  color:#fff;
+  border:none;
+  font-family:'Inter',sans-serif;
+  font-weight:700;
+  font-size:13px;
+  padding:12px 18px 12px 14px;
+  border-radius:999px;
+  box-shadow:0 6px 18px rgba(37,211,102,.4);
+  cursor:pointer;
+  transition:transform .15s ease, box-shadow .15s ease;
+}
+.wa-float:hover{transform:translateY(-2px);box-shadow:0 8px 22px rgba(37,211,102,.5);}
+.wa-float svg{flex-shrink:0;}
+@media (max-width:480px){
+  .wa-float span{display:none;}
+  .wa-float{padding:14px;border-radius:50%;}
+}
+.wa-link-btn{
+  background:none;
+  border:none;
+  padding:0;
+  margin:0;
+  color:var(--navy);
+  font:inherit;
+  font-weight:700;
+  text-decoration:underline;
+  cursor:pointer;
+}
+.wa-link-btn:hover{color:var(--red);}
+
+.wa-menu{
+  position:fixed;
+  z-index:50;
+  background:#fff;
+  border:1px solid var(--line);
+  border-radius:10px;
+  box-shadow:0 10px 30px rgba(8,27,51,.18);
+  padding:6px;
+  display:none;
+  min-width:180px;
+}
+.wa-menu.open{display:block;}
+.wa-menu a{
+  display:flex;
+  align-items:center;
+  gap:8px;
+  padding:10px 12px;
+  border-radius:7px;
+  font-family:'Inter',sans-serif;
+  font-size:13px;
+  font-weight:600;
+  color:var(--ink);
+  text-decoration:none;
+}
+.wa-menu a:hover{background:var(--paper);}
+.wa-menu a svg{flex-shrink:0;color:#25D366;}
 </style>
 </head>
 <body>
@@ -535,12 +626,77 @@
     <span>Esta herramienta es una guía de referencia. Los códigos de transmisión pueden variar según la versión exacta del vehículo. Antes de comprar, verifica el código en la etiqueta de tu transmisión o consulta con nuestro equipo.</span>
   </div>
   </div>
+
+  <button type="button" class="wa-float" id="wa-float-btn" data-wa-msg="Hola, tengo una duda sobre una transmisión" title="Escríbenos por WhatsApp">
+    <svg width="22" height="22" viewBox="0 0 24 24" fill="currentColor"><path d="M12.04 2C6.58 2 2.13 6.45 2.13 11.91c0 1.75.46 3.45 1.32 4.95L2.05 22l5.25-1.38a9.9 9.9 0 0 0 4.74 1.21h.01c5.46 0 9.9-4.45 9.9-9.91C21.96 6.45 17.51 2 12.04 2Zm5.83 14.14c-.25.7-1.24 1.28-2.02 1.44-.55.12-1.26.21-3.67-.79-3.08-1.27-5.06-4.4-5.21-4.6-.15-.2-1.25-1.66-1.25-3.17s.78-2.24 1.06-2.55c.28-.31.61-.38.81-.38.2 0 .41 0 .59.01.19.01.44-.07.69.53.25.6.86 2.08.94 2.23.08.15.13.33.03.53-.1.2-.15.33-.3.5-.15.18-.31.4-.44.53-.15.15-.3.31-.13.6.17.3.76 1.26 1.64 2.04 1.13 1 2.08 1.32 2.38 1.47.3.15.47.13.65-.08.18-.2.75-.87.95-1.17.2-.3.4-.25.66-.15.27.1 1.71.81 2 .96.29.15.48.22.55.35.08.13.08.73-.17 1.43Z"/></svg>
+    <span>WhatsApp</span>
+  </button>
+
+  <div class="wa-menu" id="wa-menu">
+    <a href="#" target="_blank" rel="noopener" data-wa-line="0">
+      <svg width="16" height="16" viewBox="0 0 24 24" fill="currentColor"><path d="M12.04 2C6.58 2 2.13 6.45 2.13 11.91c0 1.75.46 3.45 1.32 4.95L2.05 22l5.25-1.38a9.9 9.9 0 0 0 4.74 1.21h.01c5.46 0 9.9-4.45 9.9-9.91C21.96 6.45 17.51 2 12.04 2Z"/></svg>
+      Línea 1
+    </a>
+    <a href="#" target="_blank" rel="noopener" data-wa-line="1">
+      <svg width="16" height="16" viewBox="0 0 24 24" fill="currentColor"><path d="M12.04 2C6.58 2 2.13 6.45 2.13 11.91c0 1.75.46 3.45 1.32 4.95L2.05 22l5.25-1.38a9.9 9.9 0 0 0 4.74 1.21h.01c5.46 0 9.9-4.45 9.9-9.91C21.96 6.45 17.51 2 12.04 2Z"/></svg>
+      Línea 2
+    </a>
+  </div>
 </div>
 
 <script>
 (function(){
   // ================== CONFIGURACIÓN ==================
     // formato de cada fila: [marca, modelo, anios, motor, tipo, codigo]
+
+  // ---- WhatsApp: dos líneas de ventas foráneas ----
+  var WA_NUMBERS = [
+    '526731360855',
+    '526731000710'
+  ];
+
+  function escapeHtml(str){
+    return String(str).replace(/[&<>"']/g, function(c){
+      return {'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c];
+    });
+  }
+  window.__atcEscapeHtml = escapeHtml;
+
+  var waMenuEl = document.getElementById('wa-menu');
+  var waMenuLinks = waMenuEl.querySelectorAll('a[data-wa-line]');
+
+  function closeWaMenu(){
+    waMenuEl.classList.remove('open');
+  }
+
+  function openWaMenu(triggerEl, message){
+    waMenuLinks.forEach(function(a){
+      var idx = parseInt(a.getAttribute('data-wa-line'), 10);
+      a.href = 'https://wa.me/' + WA_NUMBERS[idx] + '?text=' + encodeURIComponent(message);
+    });
+    var rect = triggerEl.getBoundingClientRect();
+    var menuWidth = 190;
+    var left = Math.min(rect.left, window.innerWidth - menuWidth - 12);
+    waMenuEl.style.left = Math.max(12, left) + 'px';
+    waMenuEl.style.top = 'auto';
+    waMenuEl.style.bottom = (window.innerHeight - rect.top + 10) + 'px';
+    waMenuEl.classList.add('open');
+  }
+
+  document.addEventListener('click', function(e){
+    var trigger = e.target.closest('[data-wa-msg]');
+    if (trigger){
+      e.preventDefault();
+      var isOpen = waMenuEl.classList.contains('open') && waMenuEl.__lastTrigger === trigger;
+      if (isOpen){ closeWaMenu(); return; }
+      openWaMenu(trigger, trigger.getAttribute('data-wa-msg'));
+      waMenuEl.__lastTrigger = trigger;
+      return;
+    }
+    if (!waMenuEl.contains(e.target)) closeWaMenu();
+  });
+  window.addEventListener('scroll', closeWaMenu, true);
+  window.addEventListener('resize', closeWaMenu);
 
   // Todos los datos (tabla vehículo->transmisión, y código->producto) viven
   // ahora en el servidor (Netlify Function). El navegador solo pide, por cada
@@ -623,7 +779,7 @@
 
   function renderNoStockNote(links){
     if (links && links.length) return '';
-    return '<div class="helper-note" style="margin-top:12px;border-left-color:rgba(255,255,255,.25);color:#c7d3e2;">Por el momento no contamos con refacciones para esta transmisión en la tienda en línea. Escríbenos por WhatsApp y lo confirmamos directo con almacén.</div>';
+    return '<div class="helper-note" style="margin-top:12px;border-left-color:rgba(255,255,255,.25);color:#c7d3e2;">Por el momento no contamos con refacciones para esta transmisión en la tienda en línea. <button type="button" class="wa-link-btn" style="color:#dbe4f0;" data-wa-msg="'+escapeHtml('Hola, busco refacciones para una transmisión que no aparece en stock')+'">Escríbenos por WhatsApp</button> y lo confirmamos directo con almacén.</div>';
   }
 
   // Poblar marcas (esto no es sensible: es una lista de fabricantes de autos)
@@ -732,7 +888,7 @@
     var results = data.results || [];
 
     if (!results.length){
-      resultsEl.innerHTML = '<div class="results-head"><h2>Resultado</h2></div><div class="no-code-match">No encontramos el código "<strong>'+q+'</strong>". Revisa que esté bien escrito, o contáctanos por WhatsApp y lo verificamos directo con almacén.</div>';
+      resultsEl.innerHTML = '<div class="results-head"><h2>Resultado</h2></div><div class="no-code-match">No encontramos el código "<strong>'+q+'</strong>". Revisa que esté bien escrito, o <button type="button" class="wa-link-btn" data-wa-msg="'+escapeHtml('Hola, busco el código '+q+' y no lo encontré en el buscador')+'">contáctanos por WhatsApp</button> y lo verificamos directo con almacén.</div>';
       return;
     }
 
