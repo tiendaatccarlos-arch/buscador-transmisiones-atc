@@ -950,5 +950,27 @@ html.atc-embedded .atc-tool{
 })();
 </script>
 
+<script>
+// Le avisamos a la página que nos embebe (vía iframe) qué tan alto es
+// nuestro contenido real, para que ajuste el iframe y no deje espacio
+// en blanco de más ni corte contenido.
+(function(){
+  function enviarAltura(){
+    try {
+      window.parent.postMessage(
+        { tipo: 'atc-buscador-height', altura: document.documentElement.scrollHeight },
+        '*'
+      );
+    } catch(e){}
+  }
+  if ('ResizeObserver' in window) {
+    var ro = new ResizeObserver(enviarAltura);
+    ro.observe(document.documentElement);
+  }
+  window.addEventListener('load', enviarAltura);
+  setTimeout(enviarAltura, 300);
+  setTimeout(enviarAltura, 1000);
+})();
+</script>
 </body>
 </html>
