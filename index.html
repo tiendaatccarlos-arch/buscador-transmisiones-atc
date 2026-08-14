@@ -1002,11 +1002,22 @@ html.atc-embedded .wa-float{
       }
     });
     input.addEventListener('blur', function(){
-      // si lo que quedó escrito no coincide con la selección real, la restauramos
+      // Al perder el foco (ej. Tab), si nadie confirmó una opción,
+      // restauramos el texto. El cierre real de la lista lo maneja
+      // el listener de "clic fuera" de abajo, no este blur.
       setTimeout(function(){
+        if (list.hidden) input.value = seleccionActualTexto();
+      }, 150);
+    });
+
+    // Cierra la lista solo cuando el clic fue FUERA de todo el combo
+    // (input + lista). Así, arrastrar la barra de scroll o hacer clic
+    // dentro de la lista ya no la cierra a medias.
+    document.addEventListener('mousedown', function(e){
+      if (!wrap.contains(e.target)){
         input.value = seleccionActualTexto();
         cerrar();
-      }, 120);
+      }
     });
 
     // Mantiene el combo sincronizado con lo que le pase al <select> por fuera
