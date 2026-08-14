@@ -979,6 +979,11 @@ html.atc-embedded .wa-float{
       input.select();
       abrir();
     });
+    input.addEventListener('click', function(){
+      // Si el campo ya tenía el foco de antes (no dispara 'focus' de nuevo),
+      // este clic igual debe volver a abrir la lista si estaba cerrada.
+      if (list.hidden) abrir();
+    });
     input.addEventListener('input', function(){
       pintarLista(input.value);
       posicionarLista();
@@ -1030,7 +1035,12 @@ html.atc-embedded .wa-float{
     });
     mo.observe(select, { attributes:true, attributeFilter:['disabled'], childList:true });
 
-    window.addEventListener('scroll', cerrar, true);
+    window.addEventListener('scroll', function(e){
+      // Si el scroll viene de DENTRO de la lista (la estás desplazando),
+      // no la cerramos. Solo cerramos si es la página la que se movió.
+      if (list.contains(e.target)) return;
+      cerrar();
+    }, true);
     window.addEventListener('resize', cerrar);
 
     input.disabled = select.disabled;
