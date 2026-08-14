@@ -153,6 +153,17 @@ html.atc-embedded .wa-float{
 }
 
 /* ---- selector rail ---- */
+.rail-section-label{
+  font-family:'Inter',sans-serif;
+  font-size:12px;
+  font-weight:700;
+  letter-spacing:.08em;
+  text-transform:uppercase;
+  color:var(--navy);
+  margin:0 0 12px;
+  padding-bottom:10px;
+  border-bottom:2px solid var(--paper);
+}
 .rail{
   display:grid;
   grid-template-columns:repeat(3,1fr);
@@ -161,6 +172,7 @@ html.atc-embedded .wa-float{
   border:1px solid var(--line);
   border-radius:10px;
   overflow:hidden;
+  box-shadow:0 1px 3px rgba(8,27,51,.06);
 }
 @media (max-width:640px){
   .rail{grid-template-columns:1fr;}
@@ -251,6 +263,21 @@ html.atc-embedded .wa-float{
   border-radius:8px;
   box-shadow:0 8px 24px rgba(8,27,51,.14);
   padding:4px;
+  scrollbar-width:thin;
+  scrollbar-color:var(--line) transparent;
+}
+.combo-list::-webkit-scrollbar{
+  width:8px;
+}
+.combo-list::-webkit-scrollbar-track{
+  background:transparent;
+}
+.combo-list::-webkit-scrollbar-thumb{
+  background:var(--line);
+  border-radius:4px;
+}
+.combo-list::-webkit-scrollbar-thumb:hover{
+  background:var(--steel);
 }
 .combo-list[hidden]{display:none;}
 .combo-option{
@@ -680,6 +707,7 @@ html.atc-embedded .wa-float{
   </div>
   <div class="atc-body">
 
+  <div class="rail-section-label">Selecciona los datos de tu vehículo</div>
   <div class="rail">
     <div class="field active" id="field-marca">
       <div class="step-label">Marca</div>
