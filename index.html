@@ -1011,9 +1011,10 @@ html.atc-embedded .wa-float{
     });
 
     // Cierra la lista solo cuando el clic fue FUERA de todo el combo
-    // (input + lista). Así, arrastrar la barra de scroll o hacer clic
-    // dentro de la lista ya no la cierra a medias.
-    document.addEventListener('mousedown', function(e){
+    // (input + lista). Usamos 'click' (no 'mousedown') porque interactuar
+    // con la barra de scroll nativa no dispara un 'click' real sobre el
+    // contenido, así que no se cierra a medio scroll.
+    document.addEventListener('click', function(e){
       if (!wrap.contains(e.target)){
         input.value = seleccionActualTexto();
         cerrar();
